@@ -1,6 +1,6 @@
-## CrocoLake-Loader
+## CrocoLakeLoader
 
-CrocoLake-Loader is a Python package containing modules to interface with CrocoLake -- a database of oceanographic observations that is developed and maintained in the framework of the NSF-sponsored project CROCODILE (CESM Regional Ocean and Carbon cOnfigurator with Data assimilation and Embedding).
+CrocoLakeLoader is a Python package containing modules to interface with CrocoLake -- a database of oceanographic observations that is developed and maintained in the framework of the NSF-sponsored project CROCODILE (CESM Regional Ocean and Carbon cOnfigurator with Data assimilation and Embedding).
 
 Its strength is to offer a uniform interface to a suite of oceanographic observations, which are all maintained in the same format (parquet), offering the user with the opportunity to retrieve and manipulate observations while remaining agnostic of their original data format, thus avoiding the extra-learning required to deal with multiple formats (netCDF, CSV, parquet, etc.) and merging different sources.
 
@@ -17,11 +17,11 @@ Its strength is to offer a uniform interface to a suite of oceanographic observa
 ### Installation
 On your terminal, run:
 ```
-pip install crocolake-loader
+pip install crocolakeloader
 ```
 
 ##### Download CrocoLake
-CrocoLake exists in two versions, "PHY" and "BGC", which hold physical and biogeochemical data respectively. A full list of variable names is found in `utils/params.py`. In general, you'll want to use the "PHY" database if you're looking at only temperature and/or salinity; "BGC" otherwise. Often (but not always) temperature and salinity are present when and where BGC measurements are, but not vice versa.
+CrocoLake is available in two versions, "PHY" and "BGC", which hold physical and biogeochemical data respectively. A full list of variable names is found in `utils/params.py`. In general, you'll want to use the "PHY" database if you're looking at only temperature and/or salinity; "BGC" otherwise. Often (but not always) temperature and salinity are present when and where BGC measurements are, but not vice versa.
 
 To download the most recent version of CrocoLake PHY, from the repository root run
 ```
@@ -32,13 +32,13 @@ unzip CrocoLakePHY.zip
 
 For CrocoLake BGC:
 ```
-wget "https://whoi-my.sharepoint.com/:u:/g/personal/enrico_milanese_whoi_edu/EbjTk9CJgCZJlkvPmwI38NsBQQvUL6MXkTLBAPV5jZutVg?e=RPY9vP&download=1" -O ./CrocoLake/CrocoLake/CrocoLakeBGC.zip
+wget "https://whoi-my.sharepoint.com/:u:/g/personal/enrico_milanese_whoi_edu/EbjTk9CJgCZJlkvPmwI38NsBQQvUL6MXkTLBAPV5jZutVg?e=RPY9vP&download=1" -O ./CrocoLake/CrocoLakeBGC/CrocoLakeBGC.zip
 cd ./CrocoLake/CrocoLakeBGC/
 unzip CrocoLakeBGC.zip
 ```
 
 You can set up your own paths, but if you followed the previous steps you should now have a folder structure that is already compatible with the example notebooks, like this (listing folders only):
-|--- crocolake-loader
+|--- crocolakeloader
 |    |--- CrocoLake/
 |    |    |--- CrocoLakePHY/
 |    |    |    |--- 1002_PHY_ARGO-QC-DEV_2025-02-15
@@ -53,13 +53,13 @@ You can set up your own paths, but if you followed the previous steps you should
 
 ### Loading data from CrocoLake
 
-What follows is a brief guide on how to load data from CrocoLake. More examples (including how to manipulate the data) are in the [`notebooks`](crocolake-loader/notebooks/) folder.
+What follows is a brief guide on how to load data from CrocoLake. More examples (including how to manipulate the data) are in the [`notebooks`](crocolakeloader/notebooks/) folder.
 
 Before going ahead, remember to [download](download-crocolake) CrocoLake if you haven't already.
 
 The simplest way to load it into your working space is through the `Loader` class:
 ```
-from crocolake-loader.loader import Loader
+from crocolakeloader.loader import Loader
 loader = Loader.Loader(
     db_type="PHY",  # specify "PHY" or "BGC" for physical or biogeochemical databases
     db_rootpath="/path/to/my/CrocoLake"
@@ -73,7 +73,7 @@ df = ddf.compute()
 Note that this will load into memory all the data that `ddf` is referencing to: our first simple example would load more data than most systems can handle, so let's see how we can apply some filters.
 
 ##### Filter variables
-If you want to load only some specific variables (see list [here](crocolake-loader/utils/params.py)), you can pass a name list to `Loader()`:
+If you want to load only some specific variables (see list [here](crocolakeloader/utils/params.py)), you can pass a name list to `Loader()`:
 ```
 selected_variables = [
     "LATITUDE",
@@ -93,7 +93,7 @@ ddf = loader.get_dataframe()
 ```
 
 ##### Filter sources
-Similarly, you can also filter by data source (list [here](crocolake-loader/utils/params.py)) with a list:
+Similarly, you can also filter by data source (list [here](crocolakeloader/utils/params.py)) with a list:
 ```
 db_source = ["ARGO"]
 

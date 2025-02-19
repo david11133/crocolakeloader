@@ -1,3 +1,9 @@
+# Ignore default datalake directory content
+./CrocoLake/*
+!./CrocoLake/.gitignore
+!./CrocoLake/CrocoLakePHY/.gitignore
+!./CrocoLake/CrocoLakeBGC/.gitignore
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

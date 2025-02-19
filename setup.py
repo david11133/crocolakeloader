@@ -8,7 +8,7 @@ def parse_requirements(filename):
         return [line.strip() for line in f if line.strip() and not line.startswith('#')]
 
 setup(
-    name='crocolake-loader',
+    name='crocolakeloader',
     version='0.0.1',
     description='Package to load CrocoLake',
     license="GNU GPLv3",

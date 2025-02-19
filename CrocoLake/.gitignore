@@ -1,0 +1,5 @@
+# Ignore all files except this one to keep folder structure
+./*
+!.gitignore
+!./CrocoLakePHY/.gitignore
+!./CrocoLakeBGC/.gitignore
