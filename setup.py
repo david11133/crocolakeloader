@@ -19,7 +19,8 @@ setup(
     install_requires=parse_requirements('requirements.txt'),
     entry_points={
         'console_scripts': [
-            'crocolaketools = main:main',
+            'crocolaketools = scripts.main:main',
+            'download_db = scripts.download_db:main',
         ],
     },
 )

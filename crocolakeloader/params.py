@@ -8,6 +8,7 @@
 ## @date Fri 04 Oct 2024
 
 ##########################################################################
+import copy
 #
 # Module containing dict of parameters list and database names used across
 # methods and classes
@@ -15,17 +16,19 @@
 #------------------------------------------------------------------------------#
 #
 # List of databases and their folder names
-databases = ["ARGO", "GLODAP", "SprayGliders"]
+databases = ["ARGO", "GLODAP", "SprayGliders", "CPR", "Saildrones"]
 
 databases_codenames = {}
 databases_codenames["ARGO"] = "ARGO" #"ARGO-CLOUD"
 databases_codenames["GLODAP"] = "GLODAP"#"GLODAP-DEV"
 databases_codenames["SprayGliders"] = "SPRAY"#"SPRAY-DEV"
+databases_codenames["CPR"] = "CPR"#"SPRAY-DEV"
+databases_codenames["Saildrones"] = "SAILDRONES"#"SAILDRONES-DEV"
 
 params = {}
 
 #------------------------------------------------------------------------------#
-# TRITON
+# CROCOLAKE
 #
 # standardized names for merged database
 #
@@ -36,13 +39,15 @@ params = {}
 # version; ideally, this is needed only for Argo data (and maybe not at all, see
 # Argo dictionaries later in file)
 #
-params["TRITON_PHY_QC"] = [
+params["CROCOLAKE_PHY_QC"] = [
     'DB_NAME',
     'PLATFORM_NUMBER',
+    'N_PROF',
     'DATA_MODE',
     'LATITUDE',
     'LONGITUDE',
     'JULD',
+    'DEPTH',
     'PRES',
     'PRES_QC',
     'PRES_ERROR',
@@ -54,13 +59,15 @@ params["TRITON_PHY_QC"] = [
     'PSAL_ERROR'
 ]
 
-params["TRITON_PHY_ALL"] = [
+params["CROCOLAKE_PHY_ALL"] = [
     'DB_NAME',
     'PLATFORM_NUMBER',
+    'N_PROF',
     'DATA_MODE',
     'LATITUDE',
     'LONGITUDE',
     'JULD',
+    'DEPTH',
     'PRES',
     'PRES_QC',
     'PRES_ADJUSTED',
@@ -78,12 +85,14 @@ params["TRITON_PHY_ALL"] = [
     'PSAL_ADJUSTED_ERROR'
 ]
 
-params["TRITON_BGC_QC"] = [
+params["CROCOLAKE_BGC_QC"] = [
     'DB_NAME',
     'PLATFORM_NUMBER',
+    'N_PROF',
     'LATITUDE',
     'LONGITUDE',
     'JULD',
+    'DEPTH',
     'PRES',
     'PRES_QC',
     'PRES_ERROR',
@@ -238,12 +247,14 @@ params["TRITON_BGC_QC"] = [
     'SF6_DATA_MODE',
 ]
 
-params["TRITON_BGC_ALL"] = [
+params["CROCOLAKE_BGC_ALL"] = [
     'DB_NAME',
     'PLATFORM_NUMBER',
+    'N_PROF',
     'LATITUDE',
     'LONGITUDE',
     'JULD',
+    'DEPTH',
     'PRES',
     'PRES_QC',
     'PRES_ADJUSTED',
@@ -488,9 +499,9 @@ params["GLODAP"] = [
 ]
 
 #
-# dict for renaming parameters to triton names
+# dict for renaming parameters to crocolake names
 #
-params["GLODAP2TRITON"] = {
+params["GLODAP2CROCOLAKE"] = {
     'G2expocode' : 'PLATFORM_NUMBER',
     'G2latitude' : 'LATITUDE',
     'G2longitude' : 'LONGITUDE',
@@ -532,33 +543,127 @@ params["GLODAP2TRITON"] = {
 # original names of parameters to keep
 
 params['SprayGliders'] = [
-    'profile',
     'depth',
+    'profile',
     'lat',
     'lon',
     'time',
-    'acoustic_backscatter_at_1MHz',
-    'acoustic_backscatter_at_750kHz',
-    'mission',
     'mission_name',
-    'mission_profile',
+    'mission',
     'salinity',
+    'sal',
     'temperature',
-    'trajectory_index'
+    'temp',
+    'chlorophyll_a',
+    'doxy'
 ]
 
 #
-# dict for renaming parameters to triton names
+# dict for renaming parameters to crocolake names
 #
-params["SprayGliders2TRITON"] = {
-    'mission_name' : 'PLATFORM_NUMBER',
+params["SprayGliders2CROCOLAKE"] = {
+    'mission' : 'PLATFORM_NUMBER',
+    'profile': 'N_PROF',
+    'depth': 'DEPTH',
     'lat' : 'LATITUDE',
     'lon' : 'LONGITUDE',
     'temperature' : 'TEMP',
+    'temp' : 'TEMP',
     'salinity' : 'PSAL',
+    'sal' : 'PSAL',
     'time': 'JULD',
+    'chlorophyll_a' : 'CHLA',
+    'doxy' : 'DOXY',
 }
 
+params["CROCOLAKE2SprayGliders"] = {v: k for k, v in
+                                    params["SprayGliders2CROCOLAKE"].items()}
+
+#------------------------------------------------------------------------------#
+# CPR (Continuous Plankton Recorder)
+#
+# original names of parameters to keep
+
+params['CPR'] = [
+    'SampleId',
+    'Latitude',
+    'Longitude',
+    'MidPoint_Date_UTC',
+    'Year',
+    'Month',
+    'Day',
+    'Hour'
+]
+
+#
+# dict for renaming parameters to crocolake names
+#
+params["CPR2CROCOLAKE"] = {
+    'SampleId' : 'PLATFORM_NUMBER',
+    'Latitude' : 'LATITUDE',
+    'Longitude' : 'LONGITUDE',
+    'MidPoint_Date_UTC' : 'JULD'
+}
+
+#------------------------------------------------------------------------------#
+# CPR (Continuous Plankton Recorder)
+#
+# original names of parameters to keep
+
+params['CPR'] = [
+    'SampleId',
+    'Latitude',
+    'Longitude',
+    'MidPoint_Date_UTC',
+    'Year',
+    'Month',
+    'Day',
+    'Hour'
+]
+
+#
+# dict for renaming parameters to crocolake names
+#
+params["CPR2CROCOLAKE"] = {
+    'SampleId' : 'PLATFORM_NUMBER',
+    'Latitude' : 'LATITUDE',
+    'Longitude' : 'LONGITUDE',
+    'MidPoint_Date_UTC' : 'JULD'
+}
+
+
+#------------------------------------------------------------------------------#
+# Saildrones
+#
+# original names of parameters to keep
+#
+params["Saildrones"] = [
+    'trajectory',
+    'latitude',
+    'longitude',
+    'time',
+    'TEMP_SBE37_MEAN',
+    'SAL_SBE37_MEAN',
+    'O2_CONC_SBE37_MEAN',
+    'CHLOR_WETLABS_MEAN',
+    'CDOM_MEAN',
+    'BKSCT_RED_MEAN'
+]
+#
+# dict for renaming parameters to crocolake names
+#
+params["Saildrones2CROCOLAKE"] = {
+    'trajectory': 'PLATFORM_NUMBER',
+    'latitude': 'LATITUDE',
+    'longitude': 'LONGITUDE',
+    'time': 'JULD',
+    'TEMP_SBE37_MEAN': 'TEMP',
+    'SAL_SBE37_MEAN': 'PSAL',
+    'O2_CONC_SBE37_MEAN': 'DOXY',
+    'CHLOR_WETLABS_MEAN': 'CHLA',
+    'CDOM_MEAN': 'CDOM',
+    'BKSCT_RED_MEAN': 'BBP700'
+}
 
 
 #------------------------------------------------------------------------------#
@@ -566,6 +671,7 @@ params["SprayGliders2TRITON"] = {
 #
 # standardized names for Argo only databases, when converting from GDAC
 #
+
 params["ArgoPHY"] = [
     'PLATFORM_NUMBER',
     'N_PROF',
@@ -816,3 +922,10 @@ params["ArgoBGC"] = [
     'DOWNWELLING_PAR_ADJUSTED_ERROR',
     'DOWNWELLING_PAR_DATA_MODE',
 ]
+
+#
+# dict for renaming parameters to crocolake names
+#
+params["Argo2CROCOLAKE"] = {k : k for k in params["ArgoPHY"]} # copy of the list
+
+params["CROCOLAKE2Argo"] = copy.deepcopy(params["Argo2CROCOLAKE"])
